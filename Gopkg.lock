@@ -16,17 +16,17 @@
 [[projects]]
   name = "github.com/davecgh/go-spew"
   packages = ["spew"]
-  revision = "346938d642f2ec3594ed81d874461961cd0faa76"
-  version = "v1.1.0"
+  revision = "8991bc29aa16c548c550c7ff78260e27b9ab7c73"
+  version = "v1.1.1"
 
 [[projects]]
-  branch = "master"
   name = "github.com/garyburd/redigo"
   packages = [
     "internal",
     "redis"
   ]
-  revision = "0b5cd0856798cbbcbd01e8240333e9eeadd337b9"
+  revision = "a69d19351219b6dd56f274f96d85a7014a2ec34e"
+  version = "v1.6.0"
 
 [[projects]]
   name = "github.com/go-redis/redis"
@@ -40,14 +40,14 @@
     "internal/singleflight",
     "internal/util"
   ]
-  revision = "877867d2845fbaf86798befe410b6ceb6f5c29a3"
-  version = "v6.10.2"
+  revision = "f3bba01df2026fc865f7782948845db9cf44cf23"
+  version = "v6.14.1"
 
 [[projects]]
   branch = "master"
   name = "github.com/golang/snappy"
   packages = ["."]
-  revision = "553a641470496b2327abcac10b36396bd98e45c9"
+  revision = "2e65f85255dbc3072edf28d6b5b8efc472979f5a"
 
 [[projects]]
   name = "github.com/hanwen/go-fuse"
@@ -55,22 +55,34 @@
     "fuse",
     "fuse/nodefs",
     "fuse/pathfs",
+    "internal/utimens",
     "splice"
   ]
-  revision = "5690be47d614355a22931c129e1075c25a62e9ac"
-  version = "v20170619"
+  revision = "95c6370914ac7822973d1893680e878e156f8d70"
 
 [[projects]]
+  name = "github.com/mattn/go-sqlite3"
+  packages = ["."]
+  revision = "25ecb14adfc7543176f7d85291ec7dba82c6f7e4"
+  version = "v1.9.0"
+
+[[projects]]
+  branch = "master"
   name = "github.com/op/go-logging"
   packages = ["."]
-  revision = "b2cb9fa56473e98db8caba80237377e83fe44db5"
-  version = "v1"
+  revision = "970db520ece77730c7e4724c61121037378659d9"
 
 [[projects]]
   name = "github.com/patrickmn/go-cache"
   packages = ["."]
   revision = "a3647f8e31d79543b2d0f0ae2fe5c379d72cedc0"
   version = "v2.1.0"
+
+[[projects]]
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
 
 [[projects]]
   name = "github.com/pmezard/go-difflib"
@@ -81,15 +93,21 @@
 [[projects]]
   name = "github.com/stretchr/testify"
   packages = ["assert"]
-  revision = "12b6f73e6084dad08a7c6e575284b177ecafbc71"
-  version = "v1.2.1"
+  revision = "f35b8ab0b5a2cef36673838d662e249dd9c94686"
+  version = "v1.2.2"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/tecbot/gorocksdb"
-  packages = ["."]
-  revision = "94c01146efbac22eca4c89a59d6fef73505a9844"
-  source = "https://github.com/gigforks/gorocksdb.git"
+  branch = "development"
+  name = "github.com/threefoldtech/0-fs"
+  packages = [
+    ".",
+    "cap.np",
+    "meta",
+    "rofs",
+    "storage",
+    "storage/router"
+  ]
+  revision = "df7620ea19056fa76eb3803de25216bd1ab461bd"
 
 [[projects]]
   branch = "master"
@@ -99,27 +117,27 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/zero-os/0-fs"
-  packages = [
-    ".",
-    "cap.np",
-    "meta",
-    "rofs",
-    "storage"
-  ]
-  revision = "23730fb5c46fe13fe09378f768c5d17094cd2ea8"
-
-[[projects]]
-  branch = "master"
   name = "golang.org/x/net"
   packages = ["context"]
-  revision = "92b859f39abd2d91a854c9f9c4621b2f5054a92d"
+  revision = "161cd47e91fd58ac17490ef4d742dc98bb4cf60e"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sync"
   packages = ["errgroup"]
   revision = "1d60e4601c6fd243af51cc01ddf169918a5407ca"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/sys"
+  packages = ["unix"]
+  revision = "d0be0721c37eeb5299f245a996a483160fc36940"
+
+[[projects]]
+  name = "gopkg.in/yaml.v2"
+  packages = ["."]
+  revision = "5420a8b6744d3b0345ab293f6fcba19c978f1183"
+  version = "v2.2.1"
 
 [[projects]]
   name = "zombiezen.com/go/capnproto2"
@@ -132,12 +150,12 @@
     "internal/strquote",
     "schemas"
   ]
-  revision = "243bfedb776812540b7e2fb8d4e5c19814ab1ed8"
-  version = "v2.17.0"
+  revision = "7cfd211c19c7f5783c695f3654efa46f0df259c3"
+  version = "v2.17.1"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "88aa75d9b9cb7b4b4fdce92549e8049fa665bc4ad333e908c17723612dcdce5d"
+  inputs-digest = "15f9692e78fd7e7a38a10fa05501d9ce14099b956c18274fe53df2fd0666094d"
   solver-name = "gps-cdcl"
   solver-version = 1

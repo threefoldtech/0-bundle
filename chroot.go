@@ -12,9 +12,9 @@ import (
 	"path"
 	"syscall"
 
-	g8ufs "github.com/zero-os/0-fs"
-	"github.com/zero-os/0-fs/meta"
-	"github.com/zero-os/0-fs/storage"
+	g8ufs "github.com/threefoldtech/0-fs"
+	"github.com/threefoldtech/0-fs/meta"
+	"github.com/threefoldtech/0-fs/storage"
 )
 
 //a helper to close all under laying readers in a flist file stream since decompression doesn't
