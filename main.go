@@ -47,7 +47,7 @@ func main() {
 		},
 		cli.StringFlag{
 			Name:  "storage, s",
-			Value: "ardb://hub.gig.tech:16379",
+			Value: "zdb://hub.grid.tf:9900",
 			Usage: "storage url to use",
 		},
 		cli.BoolFlag{
@@ -63,7 +63,6 @@ func main() {
 			Value: 30,
 			Usage: "Check for flist updates interval in minutes",
 		},
-
 	}
 
 	app.ArgsUsage = "flist"

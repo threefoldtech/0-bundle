@@ -202,17 +202,12 @@ func (c *Chroot) Start() error {
 		return err
 	}
 
-	metaStore, err := meta.NewRocksMeta("", metaPath)
+	metaStore, err := meta.NewStore(metaPath)
 	if err != nil {
 		return err
 	}
 
-	u, err := url.Parse(c.Storage)
-	if err != nil {
-		return fmt.Errorf("invalid storage url: %s", err)
-	}
-
-	stor, err := storage.NewARDBStorage(u)
+	stor, err := storage.NewSimpleStorage(c.Storage)
 	if err != nil {
 		return err
 	}
