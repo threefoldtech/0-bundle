@@ -30,7 +30,7 @@ ldd zbundle || true
 popd
 
 mkdir -p /tmp/root/bin
-cp $GOPATH/src/github.com/zero-os/0-bundle/zbundle /tmp/root/bin
+cp $GOPATH/src/github.com/threefoldtech/0-bundle/zbundle /tmp/root/bin
 
 mkdir -p /tmp/archives/
 tar -czf "/tmp/archives/0-bundle.tar.gz" -C /tmp/root .
