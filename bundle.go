@@ -1,20 +1,20 @@
 package main
 
 import (
-	"github.com/codegangsta/cli"
 	"os"
-	"syscall"
 	"os/signal"
+	"syscall"
 	"time"
+
+	"github.com/codegangsta/cli"
 )
 
 type Bundle struct {
-	chroot    *Chroot
-	sandbox   *Sandbox
+	chroot  *Chroot
+	sandbox *Sandbox
 }
 
-
-func (bundle *Bundle) Run(ctx *cli.Context, updateCh chan bool){
+func (bundle *Bundle) Run(ctx *cli.Context, updateCh chan bool) {
 	defer bundle.chroot.Stop()
 	signalChan := make(chan os.Signal)
 	//listen for termination signals
@@ -35,7 +35,7 @@ func (bundle *Bundle) Run(ctx *cli.Context, updateCh chan bool){
 			bundle.chroot.Stop()
 			bundle.chroot.Wait()
 			close(exitChan)
-			if (sandboxTerminated){
+			if sandboxTerminated {
 				continue
 			}
 			log.Error("Failed to stop zbundle sandbox, exiting...")
@@ -45,7 +45,7 @@ func (bundle *Bundle) Run(ctx *cli.Context, updateCh chan bool){
 				bundle.sandBoxNoExit(signalChan)
 			}
 			return
-		case sigCh := <- signalChan:
+		case sigCh := <-signalChan:
 			bundle.sandbox.Signal(sigCh)
 			if ctx.GlobalBool("no-exit") {
 				bundle.sandBoxNoExit(signalChan)
@@ -64,9 +64,9 @@ func (bundle *Bundle) stopSandbox(exitChan chan struct{}) bool {
 	//retry to terminate sandbox 3 times
 	for i := 0; i < 3; i++ {
 		select {
-		case <- exitChan:
+		case <-exitChan:
 			return true
-		case <- time.After(5 * time.Second):
+		case <-time.After(5 * time.Second):
 			log.Infof("Failed to stop bundle sandbox, retry %d/3", i+1)
 			bundle.sandbox.Signal(syscall.SIGTERM)
 		}
@@ -75,20 +75,19 @@ func (bundle *Bundle) stopSandbox(exitChan chan struct{}) bool {
 	return false
 }
 
-func (bundle *Bundle) execSandbox(ctx *cli.Context, exitChan chan struct{}){
+func (bundle *Bundle) execSandbox(ctx *cli.Context, exitChan chan struct{}) {
 	stdout, stderr, err := bundle.sandbox.Run()
 	if err != nil {
 		if err := report(ctx, stdout, stderr, err); err != nil {
 			log.Errorf("report: %s", err)
 		}
 	}
-	exitChan <- struct {}{}
+	exitChan <- struct{}{}
 }
-
 
 func (bundle *Bundle) sandBoxNoExit(ch chan os.Signal) {
 	log.Infof("flist exited, waiting for unmount (--no-exit was set)")
-	log.Infof("the sandbox is mounted under: %s", bundle.chroot.Root())
+	log.Infof("the sandbox is mounted under: %s", bundle.chroot.MountRoot())
 	log.Infof("Ctrl+C to terminate the sandbox")
 	go func() {
 		//wait for termination signal to terminate the sandbox

@@ -2,16 +2,15 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"path"
-	"github.com/codegangsta/cli"
 	"net/url"
+
+	"github.com/codegangsta/cli"
 )
 
 var (
-	//BaseFSDir where we keep the cache and the working place of fuse
-	BaseFSDir    = path.Join(os.TempDir(), "zbundle.db")
-	BaseMountDir = path.Join(os.TempDir(), "zbundle")
+//BaseFSDir where we keep the cache and the working place of fuse
+//BaseFSDir    = path.Join(os.TempDir(), "zbundle.db")
+//BaseMountDir = path.Join(os.TempDir(), "zbundle")
 )
 
 func action(ctx *cli.Context) error {
@@ -47,13 +46,13 @@ func action(ctx *cli.Context) error {
 	}
 
 	sandbox := Sandbox{
-		Root:       chroot.Root(),
+		Root:       chroot.MountRoot(),
 		UserEnv:    ctx.GlobalStringSlice("env"),
 		EntryPoint: ctx.GlobalString("entry-point"),
 		Args:       ctx.Args().Tail(),
 	}
 	bundle := Bundle{
-		chroot: &chroot,
+		chroot:  &chroot,
 		sandbox: &sandbox,
 	}
 	bundle.Run(ctx, updateChan)

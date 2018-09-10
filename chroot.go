@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"os/user"
 	"path"
 	"syscall"
 
@@ -159,13 +160,27 @@ type Chroot struct {
 	fs *g8ufs.G8ufs
 }
 
-//Root returns the mountpoint path
-func (c *Chroot) Root() string {
-	return path.Join(BaseMountDir, c.ID)
+func (c *Chroot) getBaseDir(p ...string) string {
+	user, err := user.Current()
+	if err != nil {
+		panic("failed to get current user")
+	}
+
+	return path.Join(user.HomeDir, path.Join(p...))
+}
+
+//MountRoot returns the mountpoint path
+func (c *Chroot) MountRoot() string {
+	return c.getBaseDir(".zbundle", c.ID)
+}
+
+//WorkDirRoot returns the working directory root of an flist
+func (c *Chroot) WorkDirRoot() string {
+	return c.getBaseDir(".zbundle.wd", c.ID)
 }
 
 func (c *Chroot) prepare() error {
-	root := c.Root()
+	root := c.MountRoot()
 	for _, dir := range []string{"proc", "dev", "sys"} {
 		target := path.Join(root, dir)
 		os.MkdirAll(target, 0755)
@@ -178,7 +193,7 @@ func (c *Chroot) prepare() error {
 }
 
 func (c *Chroot) unPrepare() {
-	root := c.Root()
+	root := c.MountRoot()
 	for _, dir := range []string{"proc", "dev", "sys"} {
 		target := path.Join(root, dir)
 		syscall.Unmount(target, syscall.MNT_FORCE|syscall.MNT_DETACH)
@@ -188,14 +203,14 @@ func (c *Chroot) unPrepare() {
 
 //Start starts the chroot
 func (c *Chroot) Start() error {
-	root := c.Root()
+	root := c.MountRoot()
 
 	if g8ufs.IsMount(root) {
 		return fmt.Errorf("a chroot is running with the same id")
 	}
 	os.MkdirAll(root, 0755)
 	// should we do this under temp?
-	namespace := path.Join(BaseFSDir, c.ID)
+	namespace := c.WorkDirRoot()
 
 	metaPath, err := getMetaDB(namespace, c.Flist)
 	if err != nil {
@@ -217,7 +232,7 @@ func (c *Chroot) Start() error {
 		Target:    root,
 		MetaStore: metaStore,
 		Storage:   stor,
-		Cache:     path.Join(BaseFSDir, "cache"),
+		Cache:     path.Join(c.getBaseDir(".zbundle.cache")),
 	}
 
 	fs, err := g8ufs.Mount(&opt)
@@ -235,9 +250,10 @@ func (c *Chroot) Stop() error {
 		return fmt.Errorf("chroot is not started")
 	}
 
-	namespace := path.Join(BaseFSDir, c.ID)
+	namespace := c.WorkDirRoot()
 
-	defer os.RemoveAll(namespace)
+	//we only remove the meta director (the one contains the database)
+	//so zbundles can be resumed
 	defer os.RemoveAll(fmt.Sprintf("%s.db", namespace))
 	c.unPrepare()
 	return c.fs.Unmount()
