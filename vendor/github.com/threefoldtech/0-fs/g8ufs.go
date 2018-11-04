@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"sync"
 	"syscall"
 	"time"
 
@@ -15,6 +16,7 @@ import (
 	"github.com/threefoldtech/0-fs/meta"
 	"github.com/threefoldtech/0-fs/rofs"
 	"github.com/threefoldtech/0-fs/storage"
+	"golang.org/x/sys/unix"
 )
 
 var (
@@ -47,9 +49,11 @@ type Options struct {
 }
 
 type G8ufs struct {
+	*rofs.Config
 	target string
 	fuse   string
-	server *fuse.Server
+
+	w sync.WaitGroup
 }
 
 //Mount mounts fuse with given options, it blocks forever until unmount is called on the given mount point
@@ -74,9 +78,10 @@ func Mount(opt *Options) (*G8ufs, error) {
 		os.MkdirAll(name, 0755)
 	}
 
+	cfg := rofs.NewConfig(opt.Storage, opt.MetaStore, ca)
 	var server *fuse.Server
 	if opt.MetaStore != nil {
-		fs := rofs.New(opt.Storage, opt.MetaStore, ca)
+		fs := rofs.New(cfg)
 		var err error
 		server, err = fuse.NewServer(
 			nodefs.NewFileSystemConnector(
@@ -135,11 +140,40 @@ func Mount(opt *Options) (*G8ufs, error) {
 		return nil, fmt.Errorf("failed to start mount")
 	}
 
-	return &G8ufs{
+	fs := &G8ufs{
+		Config: cfg,
 		target: opt.Target,
-		server: server,
 		fuse:   ro,
-	}, nil
+	}
+
+	fs.w.Add(1)
+	go fs.watch()
+
+	return fs, nil
+}
+
+func (fs *G8ufs) watch() {
+	defer fs.w.Done()
+
+	n, err := unix.InotifyInit()
+	if err != nil {
+		panic(err)
+	}
+
+	defer unix.Close(n)
+	_, err = unix.InotifyAddWatch(n, fs.target, unix.IN_IGNORED|unix.IN_UNMOUNT)
+	if err != nil {
+		panic(err)
+	}
+
+	var buffer [4096]byte
+	_, err = unix.Read(n, buffer[:])
+	if err != nil {
+		log.Errorf("failed watching target: %s", err)
+		return
+	}
+
+	return
 }
 
 //Wait filesystem until it's unmounted.
@@ -148,9 +182,7 @@ func (fs *G8ufs) Wait() error {
 		fs.umountFuse()
 	}()
 
-	for IsMount(fs.target) {
-		<-time.After(1 * time.Second)
-	}
+	fs.w.Wait()
 
 	return nil
 }
@@ -181,15 +213,4 @@ func (fs *G8ufs) Unmount() error {
 	}
 
 	return errs
-}
-
-//IsMount checks if path is a mounpoint
-func IsMount(path string) bool {
-	//TODO: use a better approach to check if a mount point
-	cmd := exec.Command("mountpoint", "-q", path)
-	if err := cmd.Run(); err != nil {
-		return false
-	}
-
-	return true
 }

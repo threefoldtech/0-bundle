@@ -61,6 +61,15 @@
   revision = "95c6370914ac7822973d1893680e878e156f8d70"
 
 [[projects]]
+  name = "github.com/hashicorp/golang-lru"
+  packages = [
+    ".",
+    "simplelru"
+  ]
+  revision = "20f1fb78b0740ba8c3cb143a61e86ba5c8669768"
+  version = "v0.5.0"
+
+[[projects]]
   name = "github.com/mattn/go-sqlite3"
   packages = ["."]
   revision = "25ecb14adfc7543176f7d85291ec7dba82c6f7e4"
@@ -71,12 +80,6 @@
   name = "github.com/op/go-logging"
   packages = ["."]
   revision = "970db520ece77730c7e4724c61121037378659d9"
-
-[[projects]]
-  name = "github.com/patrickmn/go-cache"
-  packages = ["."]
-  revision = "a3647f8e31d79543b2d0f0ae2fe5c379d72cedc0"
-  version = "v2.1.0"
 
 [[projects]]
   name = "github.com/pkg/errors"
@@ -107,7 +110,7 @@
     "storage",
     "storage/router"
   ]
-  revision = "df7620ea19056fa76eb3803de25216bd1ab461bd"
+  revision = "482c2fe4bf3843ce48b9d65ae4125f5abf81eae6"
 
 [[projects]]
   branch = "master"

@@ -6,6 +6,7 @@ import (
 	"compress/gzip"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
@@ -189,6 +190,15 @@ func (c *Chroot) prepare() error {
 		}
 	}
 
+	//NOTE: the following secion is optional. We should not crash
+	//if we failed to copy the resolv.conf from host to bundle
+	os.MkdirAll(path.Join(root, "etc"), 0755)
+	resolve, err := ioutil.ReadFile("/etc/resolv.conf")
+	if err != nil {
+		return nil
+	}
+
+	ioutil.WriteFile(path.Join(root, "etc", "resolv.conf"), resolve, 0644)
 	return nil
 }
 
@@ -198,7 +208,6 @@ func (c *Chroot) unPrepare() {
 		target := path.Join(root, dir)
 		syscall.Unmount(target, syscall.MNT_FORCE|syscall.MNT_DETACH)
 	}
-
 }
 
 //Start starts the chroot
