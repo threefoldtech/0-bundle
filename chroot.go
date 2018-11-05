@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"os/exec"
 	"os/user"
 	"path"
 	"syscall"
@@ -210,13 +211,26 @@ func (c *Chroot) unPrepare() {
 	}
 }
 
+//isMount checks if path is a mountpoint
+func isMount(path string) bool {
+	//TODO: use a better approach to check if a mount point
+	//TODO: inotify ?
+	cmd := exec.Command("mountpoint", "-q", path)
+	if err := cmd.Run(); err != nil {
+		return false
+	}
+
+	return true
+}
+
 //Start starts the chroot
 func (c *Chroot) Start() error {
 	root := c.MountRoot()
 
-	if g8ufs.IsMount(root) {
+	if isMount(root) {
 		return fmt.Errorf("a chroot is running with the same id")
 	}
+
 	os.MkdirAll(root, 0755)
 	// should we do this under temp?
 	namespace := c.WorkDirRoot()
