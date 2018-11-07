@@ -8,8 +8,8 @@ apt-get install -y curl git build-essential
 apt-get install -y libgflags-dev # libzstd-dev
 
 # install go 1.8 (needed by fuse)
-curl https://storage.googleapis.com/golang/go1.8.linux-amd64.tar.gz > /tmp/go1.8.linux-amd64.tar.gz
-tar -C /usr/local -xzf /tmp/go1.8.linux-amd64.tar.gz
+curl https://storage.googleapis.com/golang/go1.10.1.linux-amd64.tar.gz > /tmp/go1.10.1.linux-amd64.tar.gz
+tar -C /usr/local -xzf /tmp/go1.10.1.linux-amd64.tar.gz
 export PATH=$PATH:/usr/local/go/bin
 mkdir -p /gopath
 export GOPATH=/gopath

@@ -63,6 +63,7 @@ func getMetaDBTar(src string) (io.ReadCloser, error) {
 			return nil, err
 		}
 	} else if u.Scheme == "http" || u.Scheme == "https" {
+		log.Debugf("downloading %s", src)
 		response, err := http.Get(src)
 		if err != nil {
 			return nil, err

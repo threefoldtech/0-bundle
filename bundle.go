@@ -21,6 +21,7 @@ func (bundle *Bundle) Run(ctx *cli.Context, updateCh chan bool) {
 	signal.Notify(signalChan, syscall.SIGHUP, syscall.SIGTERM, syscall.SIGINT)
 
 	for {
+		log.Debugf("starting chroot")
 		if err := bundle.chroot.Start(); err != nil {
 			log.Error(err.Error())
 			return
