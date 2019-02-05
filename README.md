@@ -80,3 +80,6 @@ GLOBAL OPTIONS:
    --help, -h                 show help
    --version, -v              print the version
 ```
+
+# Owner
+[muhamadazmy](https://github.com/muhamadazmy)
